@@ -2,9 +2,14 @@
   var c = document.getElementById('brickBreak'),
       ctx = c.getContext('2d');
 
-
   c.width = 500;
   c.height = 300;
+
+  var brickColumns = 10,
+      brickRows = 5,
+      brickWidth = Math.floor(c.width/brickColumns) - 2.2,
+      brickHeight = 10,
+      bricks = [];
 
   function Ball(x, y) {
     this.x = x;
@@ -37,9 +42,56 @@
       this.speedY *= -1;
     }
 
+    this.checkCollision();
+
     this.x += this.speedX;
     this.y += this.speedY;
   };
+
+  Ball.prototype.checkCollision = function() {
+    var len = bricks.length;
+    while(len--) {
+      var x = bricks[len].x,
+          y = bricks[len].y;
+
+      if (this.y <= y + brickHeight && (this.x >= x && this.x <= x + brickWidth)) {
+        this.speedY *= -1;
+        bricks.splice(len, 1);
+      }
+
+    }
+  };
+
+  function Brick(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  Brick.prototype.draw = function() {
+    ctx.fillStyle = '#123456';
+    ctx.fillRect(this.x, this.y, brickWidth, brickHeight);
+  };
+
+  function createBricks() {
+    var offsetX = 2,
+        offsetY = 2;
+    var y = 2;
+    for (var i = 1; i <= brickRows; i++) {
+      var x = 2;
+      for (var j = 1; j <= brickColumns; j++) {
+        bricks.push(new Brick(x, y));
+        x += brickWidth + offsetX;
+      }
+      y += brickHeight + offsetY;
+    }
+  }
+
+  function renderBricks() {
+    var len = bricks.length;
+    while(len--) {
+      bricks[len].draw();
+    }
+  }
 
   function Paddle() {
     this.x = c.width / 2;
@@ -85,6 +137,9 @@
       if (e.which === 39) {
         p.direction['right'] = true;
       }
+      if (e.which === 32) {
+        main();
+      }
     });
 
     document.body.addEventListener('keyup', function(e) {
@@ -96,7 +151,10 @@
       }
     });
 
-    main();
+    createBricks();
+    renderBricks();
+
+    ctx.fillText('Press space to start', c.width/2 - 50, c.height/2);
   }
 
   function main() {
@@ -105,11 +163,12 @@
     p.move();
     b.draw();
     p.draw();
+    renderBricks();
 
-    mozRequestAnimationFrame(main);
+    requestAnimationFrame(main);
   }
 
-  var b = new Ball(10, 10),
+  var b = new Ball(100, 100),
       p = new Paddle();
 
   init();
