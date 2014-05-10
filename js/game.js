@@ -21,8 +21,15 @@
   }
 
   Ball.prototype.draw = function() {
-    ctx.fillStyle = '#f06d06';
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    
+
+    ctx.beginPath();
+    ctx.fillStyle = '#000000';
+    ctx.arc(this.x,this.y,10,10,0, 0.1*Math.PI);
+    ctx.fill();
+    //ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.stroke();
+
   };
 
   Ball.prototype.move = function () {
@@ -68,7 +75,7 @@
   }
 
   Brick.prototype.draw = function() {
-    ctx.fillStyle = '#123456';
+    ctx.fillStyle = '#000000';
     ctx.fillRect(this.x, this.y, brickWidth, brickHeight);
   };
 
@@ -103,7 +110,7 @@
   }
 
   Paddle.prototype.draw = function() {
-    ctx.fillStyle = '#123456';
+    ctx.fillStyle = '#000000';
     ctx.fillRect(this.x, this.y, this.width, this.height);
   };
 
